@@ -4,24 +4,27 @@ const bcrypt = require("bcrypt");
 const { sendWhatsApp } = require("./whatsapp");
 const express = require("express");
 const cors = require("cors");
-app.use(cors({
-  origin: "http://localhost:4173", // port frontend preview
-  credentials: true
-}));
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
 const multer = require("multer");
 const XLSX = require("xlsx");
 const { pool, testConnection } = require("./db");
 const path = require("path");
 const QRCode = require("qrcode");
 
-const app = express();
-const PORT = process.env.PORT || 3000;
-
 const upload = multer({ storage: multer.memoryStorage() });
-app.use(express.static(path.join(__dirname, '../sim-web/dist')));
+app.use(
+  cors({
+    origin: "http://localhost:4173", // port frontend preview
+    credentials: true,
+  }),
+);
+app.use(express.static(path.join(__dirname, "../sim-web/dist")));
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../sim-web/dist/index.html'));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../sim-web/dist/index.html"));
 });
 app.use(cors());
 app.use(express.json());
@@ -3859,7 +3862,8 @@ app.get("*", (req, res) => {
     if (error) {
       res.status(404).json({
         success: false,
-        message: "Frontend belum dibuild. Jalankan npm run build terlebih dahulu.",
+        message:
+          "Frontend belum dibuild. Jalankan npm run build terlebih dahulu.",
       });
     }
   });
